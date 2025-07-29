@@ -35,4 +35,16 @@ public class AccountController {
         return ResponseEntity.ok(customerDTO);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDTO> updateAccountDetails(@RequestBody CustomerDTO customerDTO) {
+        boolean isUpdated = accountService.updateAccount(customerDTO);
+        if (isUpdated) {
+            return ResponseEntity.ok(new ResponseDTO(AccountConstants.STATUS_200, AccountConstants.MESSAGE_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(AccountConstants.STATUS_500, AccountConstants.MESSAGE_500));
+        }
+    }
+
 }

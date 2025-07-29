@@ -17,4 +17,11 @@ public interface IAccountService {
      */
     CustomerDTO fetchAccount(String mobileNumber);
 
+    /**
+     *
+     * @param customerDTO - CustomerDTO object
+     * @return boolean indicating if the update of the Account details is successful or not
+     */
+    boolean updateAccount(CustomerDTO customerDTO);
+
 }

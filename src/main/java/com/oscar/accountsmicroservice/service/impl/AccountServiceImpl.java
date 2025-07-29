@@ -1,6 +1,7 @@
 package com.oscar.accountsmicroservice.service.impl;
 
 import com.oscar.accountsmicroservice.constants.AccountConstants;
+import com.oscar.accountsmicroservice.dto.AccountDTO;
 import com.oscar.accountsmicroservice.dto.CustomerDTO;
 import com.oscar.accountsmicroservice.entity.Account;
 import com.oscar.accountsmicroservice.entity.Customer;
@@ -71,6 +72,32 @@ public class AccountServiceImpl implements IAccountService {
         customerDTO.setAccountDTO(AccountMapper.toDTO(account));
 
         return customerDTO;
+    }
+
+    /**
+     *
+     * @param customerDTO - CustomerDTO object
+     * @return boolean indicating if the update of Account details is successful or not
+     */
+    @Override
+    public boolean updateAccount(CustomerDTO customerDTO) {
+        boolean isUpdated = false;
+        AccountDTO accountDTO = customerDTO.getAccountDTO();
+        if (accountDTO != null) {
+            Account account = accountRepository.findById(accountDTO.getAccountNumber())
+                    .orElseThrow(() -> new ResourceNotFoundException("Account", "account number", accountDTO.getAccountNumber().toString()));
+            account = AccountMapper.toEntity(accountDTO);
+            account = accountRepository.save(account);
+
+            Long customerId = account.getCustomerId();
+            Customer customer = customerRepository.findById(customerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId", customerId.toString()));
+            customer = CustomerMapper.toEntity(customerDTO);
+            customerRepository.save(customer);
+            isUpdated = true;
+        }
+
+        return isUpdated;
     }
 
 }
