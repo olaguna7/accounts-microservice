@@ -5,6 +5,8 @@ import com.oscar.accountsmicroservice.dto.CustomerDTO;
 import com.oscar.accountsmicroservice.entity.Account;
 import com.oscar.accountsmicroservice.entity.Customer;
 import com.oscar.accountsmicroservice.exception.CustomerAlreadyExistsException;
+import com.oscar.accountsmicroservice.exception.ResourceNotFoundException;
+import com.oscar.accountsmicroservice.mapper.AccountMapper;
 import com.oscar.accountsmicroservice.mapper.CustomerMapper;
 import com.oscar.accountsmicroservice.repository.AccountRepository;
 import com.oscar.accountsmicroservice.repository.CustomerRepository;
@@ -51,4 +53,24 @@ public class AccountServiceImpl implements IAccountService {
         newAccount.setCreatedBy("Anonymous");
         return newAccount;
     }
+
+    /**
+     *
+     * @param mobileNumber - Input mobile number
+     * @return Account details based on a given mobile number
+     */
+    @Override
+    public CustomerDTO fetchAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+
+        Account account = accountRepository.findByCustomerId(customer.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString()));
+
+        CustomerDTO customerDTO = CustomerMapper.toDTO(customer);
+        customerDTO.setAccountDTO(AccountMapper.toDTO(account));
+
+        return customerDTO;
+    }
+
 }

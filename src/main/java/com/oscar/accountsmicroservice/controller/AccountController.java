@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final IAccountService accountService;
+    private final IAccountService iAccountService;
 
-    public AccountController(IAccountService accountService) {
+    public AccountController(IAccountService accountService, IAccountService iAccountService) {
         this.accountService = accountService;
+        this.iAccountService = iAccountService;
     }
 
     @PostMapping("/create")
@@ -25,6 +27,12 @@ public class AccountController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO(AccountConstants.STATUS_201, AccountConstants.MESSAGE_201));
+    }
+
+    @GetMapping("/fetch")
+    public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam String mobileNumber) {
+        CustomerDTO customerDTO = accountService.fetchAccount(mobileNumber);
+        return ResponseEntity.ok(customerDTO);
     }
 
 }
