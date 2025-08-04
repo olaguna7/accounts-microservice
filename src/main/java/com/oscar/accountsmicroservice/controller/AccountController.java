@@ -4,6 +4,10 @@ import com.oscar.accountsmicroservice.constants.AccountConstants;
 import com.oscar.accountsmicroservice.dto.CustomerDTO;
 import com.oscar.accountsmicroservice.dto.ResponseDTO;
 import com.oscar.accountsmicroservice.service.IAccountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
@@ -12,6 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(
+        name = "CRUD REST API for accounts in bank application",
+        description = "CRUD REST API in bank application to Create, Read, Update and Delete account details"
+)
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
@@ -23,6 +31,11 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @Operation(
+            summary = "Create account REST API",
+            description = "REST API method to create new Customer and Account in the bank"
+    )
+    @ApiResponse(responseCode = "201", description = "HTTP Status CREATED")
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO> createAccount(@Valid @RequestBody CustomerDTO customer) {
         accountService.createAccount(customer);
@@ -31,6 +44,11 @@ public class AccountController {
                 .body(new ResponseDTO(AccountConstants.STATUS_201, AccountConstants.MESSAGE_201));
     }
 
+    @Operation(
+            summary = "Fetch Account Details REST API",
+            description = "REST API method to fetch customer and account details based on a mobile number"
+    )
+    @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDTO> fetchAccountDetails(
             @RequestParam
@@ -41,6 +59,13 @@ public class AccountController {
         return ResponseEntity.ok(customerDTO);
     }
 
+
+    @Operation(
+            summary = "Update account details REST API",
+            description = "REST API method to update customer and account details based on an account number"
+    )
+    @ApiResponse(responseCode = "200", description = "HTTP Status OK")
+    @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error")
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO> updateAccountDetails(@Valid @RequestBody CustomerDTO customerDTO) {
         boolean isUpdated = accountService.updateAccount(customerDTO);
