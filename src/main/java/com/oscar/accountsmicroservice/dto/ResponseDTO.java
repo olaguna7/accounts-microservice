@@ -9,10 +9,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class ResponseDTO {
 
-    @Schema(description = "Status code in the response", example = "200")
+    @Schema(description = "Status code in the response")
     private String statusCode;
 
-    @Schema(description = "Status code in the response", example = "Request processed successfully")
+    @Schema(description = "Status code in the response")
     private String statusMessage;
 
 }
